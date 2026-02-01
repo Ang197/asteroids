@@ -14,4 +14,4 @@ Double Click the html file, and you're ready to play!!!
 
 ## How to play
 
-- Use Arrow Keys to move left, right, up, or down
+- Use Arrow Keys to move forward (up), left, and right
