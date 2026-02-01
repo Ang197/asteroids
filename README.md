@@ -1,0 +1,17 @@
+# Asteroids
+
+A recreation of the 1979 game, Asteroids, with pure JavaScript and HTML
+
+## Installation
+
+Use git to clone the project directly to your PC
+
+```
+git clone https://github.com/Ang197/asteroids.git
+```
+
+Double Click the html file, and you're ready to play!!!
+
+## How to play
+
+- Use Arrow Keys to move left, right, up, or down
