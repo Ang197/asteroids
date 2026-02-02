@@ -11,6 +11,10 @@
 <body>
     <canvas id="gameCanvas" width="700" height="500"></canvas>
     <script>
+        const ASTEROIDS_NUM = 3; // Starting number of asteroids
+        const ASTEROIDS_SIZE = 100; // Starting size of asteroids in pixels
+        const ASTEROIDS_SPD = 50; // Max starting speed of asteroids in pixels
+        const ASTEROIDS_VERT = 10; // Average number of vertices on each asteroid
         const FPS = 30; // Frames Per Second
         const FRICTION = 0.7; // Friction coefficient of space (0 = no friction, 1 = lots of friction)
         const SHIP_SIZE = 30; // Ship height in pixels
@@ -34,6 +38,10 @@
             }
         }
 
+        // set up asteroids
+        var asteroids = [];
+        createAsteroidBelt();
+
         //set up event handlers
         document.addEventListener("keydown", keyDown);
         document.addEventListener("keyup", keyUp);
@@ -42,6 +50,21 @@
         //set up the game loop
         setInterval(update, 1000 / FPS);
 
+        function createAsteroidBelt(){
+            asteroids = [];
+            var x, y;
+            for (var i = 0; i < ASTEROIDS_NUM; i++){
+                do {
+                    x = Math.floor(Math.random() * canv.width);
+                    y = Math.floor(Math.random() * canv.height);
+                } while (distBetweenPoints(ship.x, ship.y, x, y) < ASTEROIDS_SIZE * 2 + ship.r);
+                asteroids.push(newAsteroid(x, y));
+            }
+        }
+
+        function distBetweenPoints(x1, y1, x2, y2) {
+            return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        }
 
         function keyDown(/** @type keyboardEvent */ ev) {
             switch (ev.keyCode) {
@@ -71,6 +94,19 @@
                     break;
 
             }
+        }
+
+        function newAsteroid(x, y){
+            var asteroids = {
+                x: x,
+                y: y,
+                xv: Math.random() * ASTEROIDS_SPD / FPS * (Math.random() < 0.5 ? 1 : -1),
+                yv: Math.random() * ASTEROIDS_SPD / FPS * (Math.random() < 0.5 ? 1 : -1),
+                r: ASTEROIDS_SIZE / 2, // Asteroid radius
+                a: Math.random() * Math.PI * 2, // Asteroid angle in radians
+                vert: Math.floor(Math.random()* (ASTEROIDS_VERT  + 1) + ASTEROIDS_VERT/2),
+            }
+            return asteroids
         }
 
         function update() {
@@ -132,6 +168,41 @@
             ctx.closePath();
             ctx.stroke();
 
+            // draw the asteroids
+            ctx.strokeStyle = "slategray";
+            ctx.lineWidth = SHIP_SIZE / 20;
+            var x, y, r, a, vert;
+            for (var i = 0; i < asteroids.length; i++){
+                
+                // get the asteroid properties
+                x = asteroids[i].x;
+                y = asteroids[i].y;
+                r = asteroids[i].r;
+                a = asteroids[i].a;
+                vert = asteroids[i].vert;
+
+                // draw a path
+                ctx.beginPath();
+                ctx.moveTo(
+                    x + r * Math.cos(a),
+                    y + r * Math.sin(a),
+                );
+
+                // draw the polygon
+                for (var j = 0; j < vert; j++){
+                    ctx.lineTo(
+                        x + r * Math.cos(a + j * Math.PI * 2 / vert),
+                        y + r * Math.sin(a + j * Math.PI * 2 / vert)
+                    );
+                }
+                ctx.closePath();
+                ctx.stroke();
+
+                // move the asteroid
+
+                // handle edge of screen
+            }
+
             // rotate ship
             ship.a += ship.rot;
 
@@ -155,7 +226,7 @@
 
             // center dot
             ctx.fillStyle = "red";
-            ctx.fillRect(ship.x - 1, ship.y - 1, 2, 2)
+            // ctx.fillRect(ship.x - 1, ship.y - 1, 2, 2)
         }
     </script>
 </body>
